@@ -59,7 +59,7 @@ function(search_for_package NAME URL BRANCH)
                 EXPORT ${PROJECT_NAME}Targets
                 # More arguments as necessary...
             )
-            message("Targets from ${NAME}: ${${NAME}Targets}")
+            # message("Targets from ${NAME}: ${${NAME}Targets}")
             ## if fetched, the source tree is consumed
             # set(${NAME}_TARGET ${NAME} PARENT_SCOPE)
             set(${NAME}_TARGET ${NAME} CACHE INTERNAL ${NAME})
