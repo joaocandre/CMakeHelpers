@@ -9,9 +9,10 @@ function(echo_all_cmake_variable_values)
   message(STATUS “”)
 endfunction()
 
-
+## check, find or fetch package
+## useful to bruteforce dependency (abstraction over the source)
+## defines ${NAME}_TARGET with a valid target
 ## @note consider using ther User Package Registry (cross-plaform, creates system-wide info about packages and their config files); may not be the best option when actually installing packages as catkin does
-
 function(search_for_package NAME URL BRANCH)
     # message(WARNING "${ALFACE}")
     ## mplearn dependencies are propagated to target variable
@@ -28,12 +29,24 @@ function(search_for_package NAME URL BRANCH)
             ## if installed, target name is prefixed by the namespace
             # set(${NAME}_TARGET ${NAME}::${NAME} PARENT_SCOPE)
             # set(${NAME}_TARGET ${NAME}::${NAME} CACHE INTERNAL ${NAME}::${NAME})
-            if (DEFINED ARGV3)
-                message(WARNING ${ARGV3})
-                set(${NAME}_TARGET ${CONFIG_TARGET} CACHE INTERNAL ${CONFIG_TARGET})
+            # 1. check if name is a target
+            if (TARGET ${NAME})
+                set(${NAME}_TARGET ${NAME} CACHE INTERNAL ${NAME})
             else()
-                set(${NAME}_TARGET ${NAME}::${NAME} CACHE INTERNAL ${NAME}::${NAME})
+                if (DEFINED ARGV3)
+                    # prepend with given namespace
+                    set(${NAME}_TARGET ${ARGV3}::${NAME} CACHE INTERNAL ${ARGV3}::${NAME})
+                else()
+                    # prepend with target name (common)
+                    set(${NAME}_TARGET ${NAME}::${NAME} CACHE INTERNAL ${NAME}::${NAME})
+                endif()
             endif()
+            # if (DEFINED ARGV3)
+            #     message(WARNING "Setting target name to ${ARGV3}")
+            #     set(${NAME}_TARGET ${CONFIG_TARGET} CACHE INTERNAL ${CONFIG_TARGET})
+            # else()
+            #     set(${NAME}_TARGET ${NAME}::${NAME} CACHE INTERNAL ${NAME}::${NAME})
+            # endif()
         else()
             message(STATUS "${NAME} NOT FOUND, fetching from source!")
             FetchContent_Declare(${NAME}
@@ -52,6 +65,11 @@ function(search_for_package NAME URL BRANCH)
             set(${NAME}_TARGET ${NAME} CACHE INTERNAL ${NAME})
         endif()
     endif()
+    ## check if valid target
+    if (NOT TARGET ${${NAME}_TARGET})
+        message(FATAL_ERROR "Unable to find a target for ${NAME} [${${NAME}_TARGET}]")
+    endif()
+
 endfunction()
 
 # populate a variable with all targets in build tree
