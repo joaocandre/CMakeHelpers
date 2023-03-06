@@ -88,6 +88,7 @@ endfunction()
 
 function (print_all_cmake_targets)
     get_all_cmake_targets(all_targets ${CMAKE_CURRENT_LIST_DIR})
-    message(WARNING ${all_targets})
+    list(LENGTH all_targets sz)
+    message(WARNING "${sz} targets: ${all_targets}")
 endfunction()
 
