@@ -34,10 +34,10 @@ function(search_for_package NAME URL BRANCH)
                 set(${NAME}_TARGET ${NAME} CACHE INTERNAL ${NAME})
             else()
                 if (DEFINED ARGV3)
-                    # prepend with given namespace
-                    set(${NAME}_TARGET ${ARGV3}::${NAME} CACHE INTERNAL ${ARGV3}::${NAME})
+                    # specify target
+                    set(${NAME}_TARGET ${NAME}::${ARGV3} CACHE INTERNAL ${NAME}::${ARGV3})
                 else()
-                    # prepend with target name (common)
+                    # prepend with target name (common usage)
                     set(${NAME}_TARGET ${NAME}::${NAME} CACHE INTERNAL ${NAME}::${NAME})
                 endif()
             endif()
