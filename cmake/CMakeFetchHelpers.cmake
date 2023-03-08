@@ -25,7 +25,7 @@ function(search_for_package NAME URL BRANCH)
     else ()
         find_package(${NAME} QUIET)
         if (${${NAME}_FOUND})
-            message(STATUS "${NAME} FOUND!")
+            message(STATUS "Found ${NAME} [${${NAME}_VERSION}]")
             ## if installed, target name is prefixed by the namespace
             # set(${NAME}_TARGET ${NAME}::${NAME} PARENT_SCOPE)
             # set(${NAME}_TARGET ${NAME}::${NAME} CACHE INTERNAL ${NAME}::${NAME})
@@ -41,14 +41,8 @@ function(search_for_package NAME URL BRANCH)
                     set(${NAME}_TARGET ${NAME}::${NAME} CACHE INTERNAL ${NAME}::${NAME})
                 endif()
             endif()
-            # if (DEFINED ARGV3)
-            #     message(WARNING "Setting target name to ${ARGV3}")
-            #     set(${NAME}_TARGET ${CONFIG_TARGET} CACHE INTERNAL ${CONFIG_TARGET})
-            # else()
-            #     set(${NAME}_TARGET ${NAME}::${NAME} CACHE INTERNAL ${NAME}::${NAME})
-            # endif()
         else()
-            message(STATUS "${NAME} NOT FOUND, fetching from source!")
+            message(STATUS "Can't find ${NAME}, fetching from source [${URL}:${BRANCH}]")
             FetchContent_Declare(${NAME}
                 GIT_REPOSITORY  ${URL}
                 GIT_TAG         ${BRANCH}
@@ -56,7 +50,8 @@ function(search_for_package NAME URL BRANCH)
             FetchContent_MakeAvailable(${NAME})
             install(
                 TARGETS ${NAME}
-                EXPORT ${PROJECT_NAME}Targets
+                ## exporting dependencies leads to issue https://discourse.cmake.org/t/how-to-export-target-which-depends-on-other-target-which-is-in-multiple-export-sets/3007/2
+                # EXPORT ${PROJECT_NAME}Targets
                 # More arguments as necessary...
             )
             # message("Targets from ${NAME}: ${${NAME}Targets}")
