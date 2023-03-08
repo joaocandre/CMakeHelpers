@@ -15,14 +15,14 @@ include(CMakeFetchHelpers)
 Alternatively, the [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html) module can be used to ensure this package is available at configure time without having to configure it locally:
 
 ```
-## Get custom helper modules from remote repository
+## Get custom helper module "CMakeFetchHelper" from remote repository
 include(CMakeFetchHelpers OPTIONAL RESULT_VARIABLE CMakeFetchHelpers_FOUND)
 if(CMakeFetchHelpers_FOUND)
     message(WARNING "Found CMakeFetchHelpers!")
 else()
     include(FetchContent)
     FetchContent_Declare(cmake-helper-modules
-        GIT_REPOSITORY  https://github.com/joaocandre/CMakeHelpers
+        GIT_REPOSITORY  https://github.com/joaocandre/cmake-helper-modules
         GIT_TAG main
     )
     FetchContent_MakeAvailable(cmake-helper-modules)
