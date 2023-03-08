@@ -1,4 +1,4 @@
-# CMakeHelpers
+# cmake-helper-modules
 Custom helper modules for CMake projects
 
 
