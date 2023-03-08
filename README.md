@@ -7,7 +7,7 @@ Custom helper modules for CMake projects
 To use this package, either place it on your default `CMAKE_MODULE_PATH` (or add custom path to it) and include the desired module:
 
 ```
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${cmake-helper-modules_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "<path>/cmake")
 include(CMakeFetchHelpers)
 ```
 
