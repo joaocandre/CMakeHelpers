@@ -49,7 +49,7 @@ function(search_for_package NAME URL BRANCH)
             )
             FetchContent_MakeAvailable(${NAME})
             if (DEFINED ARGV3)
-                install(TARGETS ${NAME})
+                install(TARGETS ${ARGV3})
             else()
                 install(
                     TARGETS ${NAME}
