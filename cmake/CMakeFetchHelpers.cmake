@@ -61,12 +61,18 @@ function(search_for_package NAME URL BRANCH)
             # message("Targets from ${NAME}: ${${NAME}Targets}")
             ## if fetched, the source tree is consumed
             # set(${NAME}_TARGET ${NAME} PARENT_SCOPE)
-            set(${NAME}_TARGET ${NAME} CACHE INTERNAL ${NAME})
+            if (DEFINED ARGV3)
+                # specify target
+                set(${NAME}_TARGET ${NAME}::${ARGV3} CACHE INTERNAL ${NAME}::${ARGV3})
+            else()
+                # prepend with target name (common usage)
+                set(${NAME}_TARGET ${NAME}::${NAME} CACHE INTERNAL ${NAME}::${NAME})
+            endif()
         endif()
     endif()
     ## check if valid target
     if (NOT TARGET ${${NAME}_TARGET})
-        message(FATAL_ERROR "Unable to find a target for ${NAME} [${${NAME}_TARGET}]")
+        message(FATAL_ERROR "Unable to find a valid target for ${NAME} [${${NAME}_TARGET}]")
     endif()
 
 endfunction()
