@@ -48,12 +48,16 @@ function(search_for_package NAME URL BRANCH)
                 GIT_TAG         ${BRANCH}
             )
             FetchContent_MakeAvailable(${NAME})
-            install(
-                TARGETS ${NAME}
-                ## exporting dependencies leads to issue https://discourse.cmake.org/t/how-to-export-target-which-depends-on-other-target-which-is-in-multiple-export-sets/3007/2
-                # EXPORT ${PROJECT_NAME}Targets
-                # More arguments as necessary...
-            )
+            if (DEFINED ARGV3)
+                install(TARGETS ${ARGV3})
+            else()
+                install(
+                    TARGETS ${NAME}
+                    ## exporting dependencies leads to issue https://discourse.cmake.org/t/how-to-export-target-which-depends-on-other-target-which-is-in-multiple-export-sets/3007/2
+                    # EXPORT ${PROJECT_NAME}Targets
+                    # More arguments as necessary...
+                )
+            endif()
             # message("Targets from ${NAME}: ${${NAME}Targets}")
             ## if fetched, the source tree is consumed
             # set(${NAME}_TARGET ${NAME} PARENT_SCOPE)
