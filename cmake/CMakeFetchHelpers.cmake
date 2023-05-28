@@ -49,24 +49,20 @@ function(search_for_package NAME URL BRANCH)
             )
             FetchContent_MakeAvailable(${NAME})
             if (DEFINED ARGV3)
-                install(TARGETS ${ARGV3})
-            else()
-                install(
-                    TARGETS ${NAME}
-                    ## exporting dependencies leads to issue https://discourse.cmake.org/t/how-to-export-target-which-depends-on-other-target-which-is-in-multiple-export-sets/3007/2
-                    # EXPORT ${PROJECT_NAME}Targets
-                    # More arguments as necessary...
+                install(TARGETS ${ARGV3}
+                        # EXPORT ${PROJECT_NAME}Targets
+                        ## exporting dependencies leads to issue https://discourse.cmake.org/t/how-to-export-target-which-depends-on-other-target-which-is-in-multiple-export-sets/3007/2
                 )
-            endif()
-            # message("Targets from ${NAME}: ${${NAME}Targets}")
-            ## if fetched, the source tree is consumed
-            # set(${NAME}_TARGET ${NAME} PARENT_SCOPE)
-            if (DEFINED ARGV3)
                 # specify target
                 set(${NAME}_TARGET ${NAME}::${ARGV3} CACHE INTERNAL ${NAME}::${ARGV3})
             else()
-                # prepend with target name (common usage)
-                set(${NAME}_TARGET ${NAME}::${NAME} CACHE INTERNAL ${NAME}::${NAME})
+                install(
+                    TARGETS ${NAME}
+                    # EXPORT ${PROJECT_NAME}Targets
+                    ## exporting dependencies leads to issue https://discourse.cmake.org/t/how-to-export-target-which-depends-on-other-target-which-is-in-multiple-export-sets/3007/2
+                )
+                # specify target
+                set(${NAME}_TARGET ${NAME} CACHE INTERNAL ${NAME})
             endif()
         endif()
     endif()
