@@ -13,8 +13,9 @@ endfunction()
 ## useful to bruteforce dependency (abstraction over the source)
 ## defines ${NAME}_TARGET with a valid target
 ## @note consider using ther User Package Registry (cross-plaform, creates system-wide info about packages and their config files); may not be the best option when actually installing packages as catkin does
+include(FetchContent)
 function(search_for_package NAME URL BRANCH)
-    # message(WARNING "${ALFACE}")
+    # message(WARNING "${PROJECT_NAME}")
     ## mplearn dependencies are propagated to target variable
     if (TARGET ${NAME})
         ## if in the build tree / being built
@@ -50,8 +51,8 @@ function(search_for_package NAME URL BRANCH)
             FetchContent_MakeAvailable(${NAME})
             if (DEFINED ARGV3)
                 install(TARGETS ${ARGV3}
-                        # EXPORT ${PROJECT_NAME}Targets
-                        ## exporting dependencies leads to issue https://discourse.cmake.org/t/how-to-export-target-which-depends-on-other-target-which-is-in-multiple-export-sets/3007/2
+                    # EXPORT ${PROJECT_NAME}Targets
+                    ## exporting dependencies leads to issue https://discourse.cmake.org/t/how-to-export-target-which-depends-on-other-target-which-is-in-multiple-export-sets/3007/2
                 )
                 # specify target
                 set(${NAME}_TARGET ${NAME}::${ARGV3} CACHE INTERNAL ${NAME}::${ARGV3})
@@ -63,6 +64,7 @@ function(search_for_package NAME URL BRANCH)
                 )
                 # specify target
                 set(${NAME}_TARGET ${NAME} CACHE INTERNAL ${NAME})
+            set(${NAME}_FETCHED "OFF" CACHE INTERNAL "OFF")
             endif()
         endif()
     endif()
