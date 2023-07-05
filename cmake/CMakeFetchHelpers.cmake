@@ -64,7 +64,7 @@ function(search_for_package NAME URL BRANCH)
                 )
                 # specify target
                 set(${NAME}_TARGET ${NAME} CACHE INTERNAL ${NAME})
-            set(${NAME}_FETCHED "OFF" CACHE INTERNAL "OFF")
+            set(${NAME}_FETCHED "ON" CACHE INTERNAL "ON")
             endif()
         endif()
     endif()
