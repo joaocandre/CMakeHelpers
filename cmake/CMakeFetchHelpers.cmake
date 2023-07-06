@@ -15,8 +15,8 @@ endfunction()
 ## @note consider using ther User Package Registry (cross-plaform, creates system-wide info about packages and their config files); may not be the best option when actually installing packages as catkin does
 include(FetchContent)
 function(search_for_package NAME URL BRANCH)
-    # message(WARNING "${PROJECT_NAME}")
-    ## mplearn dependencies are propagated to target variable
+    # message(WARNING "Searching for ${PROJECT_NAME}")
+    set(${NAME}_FETCHED "OFF" CACHE INTERNAL "OFF")
     if (TARGET ${NAME})
         ## if in the build tree / being built
         ## target name does not require namespace
