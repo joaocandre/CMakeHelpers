@@ -73,8 +73,8 @@ function(search_for_package NAME URL BRANCH)
     endif()
     ## set imported flag
     get_target_property(${NAME}_IMPORTED ${${NAME}_TARGET} IMPORTED)
-    # set(${NAME}_FETCHED "ON" CACHE INTERNAL "ON")
-    message(WARNING "${${NAME}_IMPORTED}")
+    set(${NAME}_IMPORTED "${${NAME}_IMPORTED}" CACHE INTERNAL "${${NAME}_IMPORTED}")
+    # message(WARNING "${${NAME}_IMPORTED}")
 
 
 endfunction()
