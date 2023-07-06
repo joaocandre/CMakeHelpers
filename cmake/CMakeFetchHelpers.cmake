@@ -63,7 +63,6 @@ function(search_for_package NAME URL BRANCH)
                 )
                 # specify target
                 set(${NAME}_TARGET ${NAME} CACHE INTERNAL ${NAME})
-            # set(${NAME}_FETCHED "ON" CACHE INTERNAL "ON")
             endif()
         endif()
     endif()
@@ -75,8 +74,6 @@ function(search_for_package NAME URL BRANCH)
     get_target_property(${NAME}_IMPORTED ${${NAME}_TARGET} IMPORTED)
     set(${NAME}_IMPORTED "${${NAME}_IMPORTED}" CACHE INTERNAL "${${NAME}_IMPORTED}")
     # message(WARNING "${${NAME}_IMPORTED}")
-
-
 endfunction()
 
 # populate a variable with all targets in build tree
