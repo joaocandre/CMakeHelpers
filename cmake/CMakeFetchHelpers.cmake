@@ -16,7 +16,6 @@ endfunction()
 include(FetchContent)
 function(search_for_package NAME URL BRANCH)
     # message(WARNING "Searching for ${PROJECT_NAME}")
-    set(${NAME}_FETCHED "OFF" CACHE INTERNAL "OFF")
     if (TARGET ${NAME})
         ## if in the build tree / being built
         ## target name does not require namespace
@@ -64,7 +63,7 @@ function(search_for_package NAME URL BRANCH)
                 )
                 # specify target
                 set(${NAME}_TARGET ${NAME} CACHE INTERNAL ${NAME})
-            set(${NAME}_FETCHED "ON" CACHE INTERNAL "ON")
+            # set(${NAME}_FETCHED "ON" CACHE INTERNAL "ON")
             endif()
         endif()
     endif()
@@ -72,6 +71,9 @@ function(search_for_package NAME URL BRANCH)
     if (NOT TARGET ${${NAME}_TARGET})
         message(FATAL_ERROR "Unable to find a valid target for ${NAME} [${${NAME}_TARGET}]")
     endif()
+    ## set imported flag
+    get_target_property(${NAME}_IMPORTED ${${NAME}_TARGET} IMPORTED)
+    # set(${NAME}_FETCHED "ON" CACHE INTERNAL "ON")
 
 endfunction()
 
