@@ -1,17 +1,29 @@
 
-
+## print all current/available variables
 function(echo_all_cmake_variable_values)
-  message(STATUS “”)
-  get_cmake_property(vs VARIABLES)
-  foreach(v ${vs})
-    message(STATUS “${v}=’${${v}}'”)
-  endforeach(v)
-  message(STATUS “”)
+    message(STATUS “”)
+    get_cmake_property(vs VARIABLES)
+    foreach(v ${vs})
+        message(STATUS “${v}=’${${v}}'”)
+    endforeach(v)
+    message(STATUS “”)
+endfunction()
+
+## check if given NAME is a target alias, and return aliased target
+function(check_if_alias NAME)
+    get_property(ALIASED TARGET "${NAME}" PROPERTY ALIASED_TARGET)
+    if("${ALIASED}" STREQUAL "")
+        message(WARNING "${NAME} is not an alias")
+        # return(${NAME})
+    else()
+        message(WARNING "${NAME} is an alias of ${ALIASED}")
+        # return(${ALIASED})
+    endif()
 endfunction()
 
 ## check, find or fetch package
 ## useful to bruteforce dependency (abstraction over the source)
-## defines ${NAME}_TARGET with a valid target
+## defines ${NAME}_TARGET with a valid target/alias
 ## @note consider using ther User Package Registry (cross-plaform, creates system-wide info about packages and their config files); may not be the best option when actually installing packages as catkin does
 include(FetchContent)
 function(search_for_package NAME URL BRANCH)
@@ -27,9 +39,8 @@ function(search_for_package NAME URL BRANCH)
         if (${${NAME}_FOUND})
             message(STATUS "Found ${NAME} [${${NAME}_VERSION}]")
             ## if installed, target name is prefixed by the namespace
-            # set(${NAME}_TARGET ${NAME}::${NAME} PARENT_SCOPE)
-            # set(${NAME}_TARGET ${NAME}::${NAME} CACHE INTERNAL ${NAME}::${NAME})
-            # 1. check if name is a target
+            # 1. check if name is a target (in install/export tree)
+            #    differs from top-level condition as it handles the result of find_package
             if (TARGET ${NAME})
                 set(${NAME}_TARGET ${NAME} CACHE INTERNAL ${NAME})
             else()
@@ -37,7 +48,7 @@ function(search_for_package NAME URL BRANCH)
                     # specify target
                     set(${NAME}_TARGET ${NAME}::${ARGV3} CACHE INTERNAL ${NAME}::${ARGV3})
                 else()
-                    # prepend with target name (common usage)
+                    # prepend with target name as namespace (common usage)
                     set(${NAME}_TARGET ${NAME}::${NAME} CACHE INTERNAL ${NAME}::${NAME})
                 endif()
             endif()
@@ -48,20 +59,15 @@ function(search_for_package NAME URL BRANCH)
                 GIT_TAG         ${BRANCH}
             )
             FetchContent_MakeAvailable(${NAME})
+            # define install behavior
+            ## @note exporting dependencies leads to issue https://discourse.cmake.org/t/how-to-export-target-which-depends-on-other-target-which-is-in-multiple-export-sets/3007/2
             if (DEFINED ARGV3)
-                install(TARGETS ${ARGV3}
-                    # EXPORT ${PROJECT_NAME}Targets
-                    ## exporting dependencies leads to issue https://discourse.cmake.org/t/how-to-export-target-which-depends-on-other-target-which-is-in-multiple-export-sets/3007/2
-                )
-                # specify target
+                install(TARGETS ${ARGV3})  # EXPORT ${PROJECT_NAME}Targets
+                # define target name
                 set(${NAME}_TARGET ${NAME}::${ARGV3} CACHE INTERNAL ${NAME}::${ARGV3})
             else()
-                install(
-                    TARGETS ${NAME}
-                    # EXPORT ${PROJECT_NAME}Targets
-                    ## exporting dependencies leads to issue https://discourse.cmake.org/t/how-to-export-target-which-depends-on-other-target-which-is-in-multiple-export-sets/3007/2
-                )
-                # specify target
+                install(TARGETS ${NAME})   # EXPORT ${PROJECT_NAME}Targets
+                # define target name
                 set(${NAME}_TARGET ${NAME} CACHE INTERNAL ${NAME})
             endif()
         endif()
